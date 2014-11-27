@@ -19,7 +19,7 @@ Install with package manager (yum for CentOS). After a successful install you wi
 ## Walkthrough
 
 Description | Command
---- | :---: 
+--- | :---
 List images downloaded | `docker images`
 Remove image | `docker rmi <name>`
 List containers (running images) | `docker ps -l`
@@ -51,12 +51,13 @@ RUN cd node
 RUN tar -xzvf /tmp/rpm_store/node-v0.10.33-linux-x64.tar.gz -C /usr/local
 RUN ln -s /usr/local/node-v0.10.33-linux-x64 /usr/local/node
 RUN useradd server
-RUN su - server
+USER server
 RUN whoami
 RUN echo PATH=\$PATH:/usr/local/node/bin >>~/.bashrc
 RUN /usr/local/node/bin/npm --version
 RUN /usr/local/node/bin/node --version
 ```
+Complete documentation can be found [here][2]
 
 ## Usage
 ```
@@ -106,3 +107,4 @@ Commands:
 
 
 [1]: https://docs.docker.com/
+[2]: http://docs.docker.com/reference/builder/
