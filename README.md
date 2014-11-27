@@ -28,9 +28,19 @@ Run interactively (will pull the centos image) | `docker run -i -t centos /bin/b
 Copy files on/off container | `docker cp centos:~/<file> .` <br> `docker cp <file> centos:~/`
 Build from a Docker file (see example below) | `mkdir test` <br> `vi test/Dockerfile` <br> `docker build -t <imagename> <folder containing dockerfile>`
 
+### Opening a Port
+
+#### Finding the IP Address and Connecting
+    docker ps
+    docker inspect <container> | grep IPAddress
+    nc <contianer_ip> <container_port>
+
+#### NATing the port locally
+    iptables -t nat -A DOCKER -p tcp --dport <port> -j DNAT --to-destination <contianer_ip>:<container_port>
+
 ### Example Dockerfile
 
-This dockerfile was created when the contianer could not access the outside world and so it was necessary to copy on the RPM files and install from these rather than via the internet repros.
+This dockerfile was created when the contianer could not access the outside world and so it was necessary to copy on the RPM files and install from these rather than via the internet repros. The local repos was made using the command `yumdownloader` to download the RPMs.
 
 ```
 FROM centos
@@ -40,6 +50,9 @@ RUN mkdir node
 RUN cd node
 RUN tar -xzvf /tmp/rpm_store/node-v0.10.33-linux-x64.tar.gz -C /usr/local
 RUN ln -s /usr/local/node-v0.10.33-linux-x64 /usr/local/node
+RUN useradd server
+RUN su - server
+RUN whoami
 RUN echo PATH=\$PATH:/usr/local/node/bin >>~/.bashrc
 RUN /usr/local/node/bin/npm --version
 RUN /usr/local/node/bin/node --version
